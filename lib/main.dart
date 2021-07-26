@@ -1,6 +1,8 @@
+import 'package:awesome_app/di/get_injection.dart' as di;
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  await di.inject();
   runApp(MyApp());
 }
 
