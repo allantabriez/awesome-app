@@ -2,15 +2,15 @@
 
 Flutter Project for Mobile App Assessment from Evermos
 
-## Getting Started
+## Tech Stack Used
 
-This project is a starting point for a Flutter application.
+I tried to implement the Clean Architecture pattern using Provider as the State Management. Some of the tech stacks used are as following:
+- Dio for networking
+- Provider for State Management
+- Clean Architecture as the design/architectural pattern
+- Connectivity for Network status
+- GetIt for Dependency Injection
 
-A few resources to get you started if this is your first Flutter project:
+Note: I tried to implement caching but I hadn't enough time.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Thank you for checking out!
