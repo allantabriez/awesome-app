@@ -8,7 +8,7 @@ class ApiInterceptors implements Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    options.headers['Authorization'] = 'API_KEY';
+    options.headers['Authorization'] = '563492ad6f91700001000001786cabe2c54e44a7b0176f513692914b';
     return handler.next(options);
   }
 

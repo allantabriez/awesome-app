@@ -1,17 +1,21 @@
-import 'package:awesome_app/commons/resource.dart';
+import 'package:awesome_app/commons/result_state.dart';
 import 'package:awesome_app/data/model/get_photos_response.dart';
 import 'package:awesome_app/domain/usecase/home_use_case.dart';
+import 'package:awesome_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class HomeProvider extends ChangeNotifier {
   final HomeUseCase _homeUseCase;
 
-  late Resource<GetPhotosResponse> _state;
-  List<Photo> _list = List.empty();
+  ResultState _state = ResultState.Loading;
+  late String _message;
+  List<Photo> _list = List.empty(growable: true);
   late int? _nextPage;
   bool _isGrid = false;
 
-  Resource<GetPhotosResponse> get state => _state;
+  ResultState get state => _state;
+
+  String get message => _message;
 
   List<Photo> get list => _list;
 
@@ -29,35 +33,52 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void getFirstPage() async {
-    _state = Resource(null, true, null);
+    _state = ResultState.Loading;
     notifyListeners();
     try {
-      var response = await _homeUseCase.getPhotos(1);
-      _list.addAll(response.data?.photos ?? List.empty());
-      _state = response;
-      response.data?.nextPage == null
-          ? _nextPage = null
-          : _nextPage = response.data!.page! + 1;
-      notifyListeners();
+      var isConnected = await _homeUseCase.isConnected();
+      if (isConnected) {
+        var response = await _homeUseCase.getPhotos(1);
+        _list.addAll(response.photos ?? List.empty(growable: true));
+        // _list = response.photos ?? List.empty(growable: true);
+        _state = ResultState.HasData;
+        response.nextPage == null
+            ? _nextPage = null
+            : _nextPage = response.page! + 1;
+        notifyListeners();
+      } else {
+        _state = ResultState.NoConnection;
+        _message = NO_CONNECTION;
+        notifyListeners();
+      }
     } catch (e) {
-      _state = Resource(null, false, e.toString());
+      _state = ResultState.Error;
+      _message = e.toString();
       notifyListeners();
     }
   }
 
   void getNextPage() async {
-    _state = Resource(null, true, null);
+    _state = ResultState.Loading;
     notifyListeners();
     try {
-      var response = await _homeUseCase.getPhotos(_nextPage!);
-      _list.addAll(response.data?.photos ?? List.empty());
-      _state = response;
-      response.data?.nextPage == null
-          ? _nextPage = null
-          : _nextPage = response.data!.page! + 1;
-      notifyListeners();
+      var isConnected = await _homeUseCase.isConnected();
+      if (isConnected) {
+        var response = await _homeUseCase.getPhotos(_nextPage!);
+        _list.addAll(response.photos ?? List.empty(growable: true));
+        _state = ResultState.HasData;
+        response.nextPage == null
+            ? _nextPage = null
+            : _nextPage = response.page! + 1;
+        notifyListeners();
+      } else {
+        _state = ResultState.NoConnection;
+        _message = NO_CONNECTION;
+        notifyListeners();
+      }
     } catch (e) {
-      _state = Resource(null, false, e.toString());
+      _state = ResultState.Error;
+      _message = e.toString();
       notifyListeners();
     }
   }
