@@ -1,5 +1,6 @@
 import 'package:awesome_app/commons/result_state.dart';
 import 'package:awesome_app/data/model/get_photos_response.dart';
+import 'package:awesome_app/presentation/detail/detail_screen.dart';
 import 'package:awesome_app/presentation/home/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_app/di/get_injection.dart' as di;
@@ -92,29 +93,34 @@ class HomeScreen extends StatelessWidget {
         return ListView.builder(
           itemCount: list.length,
           itemBuilder: (context, index) {
-            return Card(
-              child: ListTile(
-                onTap: () {
-
-                },
-                leading: Hero(
-                  tag: list[index].id.toString(),
-                  child: Image.network(
-                    list[index].src!.small ?? '',
-                    width: 50,
-                    height: 100,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                title: Text(
-                  'Taken by: ${list[index].photographer}',
-                  maxLines: 1,
-                ),
-              ),
-            );
+            return _listItem(list[index], () {
+              Navigator.pushNamed(context, DetailScreen.routeName,
+                  arguments: list[index]);
+            });
           },
         );
       },
+    );
+  }
+
+  Widget _listItem(Photo photo, Function() callback) {
+    return Card(
+      child: ListTile(
+        onTap: callback,
+        leading: Hero(
+          tag: photo.id.toString(),
+          child: Image.network(
+            photo.src!.landscape ?? '',
+            width: 50,
+            height: 100,
+            fit: BoxFit.fill,
+          ),
+        ),
+        title: Text(
+          'Taken by: ${photo.photographer}',
+          maxLines: 1,
+        ),
+      ),
     );
   }
 
@@ -134,7 +140,8 @@ class HomeScreen extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             var photo = provider.list[index];
             return _gridItem(photo, () {
-
+              Navigator.pushNamed(context, DetailScreen.routeName,
+                  arguments: photo);
             });
           },
         );
@@ -151,7 +158,7 @@ class HomeScreen extends StatelessWidget {
             child: Stack(
               children: [
                 Image.network(
-                  photo.src!.medium ?? '',
+                  photo.src!.landscape ?? '',
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.fill,
@@ -159,16 +166,16 @@ class HomeScreen extends StatelessWidget {
                 Row(children: [
                   Expanded(
                       child: Container(
-                        child: Text(
-                          photo.photographer ?? '',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        color: Color.fromRGBO(255, 255, 255, 0.4),
-                        padding: const EdgeInsets.all(8),
-                      ))
+                    child: Text(
+                      photo.photographer ?? '',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                    padding: const EdgeInsets.all(8),
+                  ))
                 ])
               ],
             )),
@@ -177,4 +184,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-

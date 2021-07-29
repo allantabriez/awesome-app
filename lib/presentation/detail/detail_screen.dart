@@ -1,7 +1,5 @@
-import 'package:awesome_app/presentation/detail/detail_provider.dart';
+import 'package:awesome_app/data/model/get_photos_response.dart';
 import 'package:flutter/material.dart';
-import 'package:awesome_app/di/get_injection.dart' as di;
-import 'package:provider/provider.dart';
 
 class DetailScreen extends StatelessWidget {
   static const routeName = '/details';
@@ -10,10 +8,34 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int _id = ModalRoute.of(context)!.settings.arguments as int;
-    return ChangeNotifierProvider<DetailProvider>(
-      create: (_) => di.getIt.get(param1: _id),
-      child: Scaffold(),
+    final Photo photo = ModalRoute.of(context)!.settings.arguments as Photo;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(photo.photographer ?? ''),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Hero(
+                tag: photo.id.toString(),
+                child: Image.network(photo.src!.landscape ?? '')),
+            SizedBox(height: 16,),
+            Text('Check out this picture at:',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(photo.url ?? '',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

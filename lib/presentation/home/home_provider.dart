@@ -11,7 +11,7 @@ class HomeProvider extends ChangeNotifier {
   late String _message;
   List<Photo> _list = List.empty(growable: true);
   late int? _nextPage;
-  bool _isGrid = false;
+  bool _isGrid = true;
 
   ResultState get state => _state;
 
