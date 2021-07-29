@@ -11,6 +11,6 @@ I tried to implement the Clean Architecture pattern using Provider as the State 
 - Connectivity for Network status
 - GetIt for Dependency Injection
 
-Note: I tried to implement caching but I hadn't enough time.
+Note: I tried to implement caching and testing but I didn't had enough time.
 
 Thank you for checking out!
