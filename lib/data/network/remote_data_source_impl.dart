@@ -16,12 +16,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       var response = await _dio.get('photos/$id');
       if (response.statusCode == 200) {
         var data = Photo.fromJson(response.data);
-        return Resource(data, null);
+        return Resource(data, false, null);
       }
-      return Resource(null, response.statusMessage);
+      return Resource(null, false, response.statusMessage);
     } on DioError catch (ex) {
       _errorHandler.handleError(ex);
-      return Resource(null, ex.message);
+      return Resource(null, false, ex.message);
     }
   }
 
@@ -34,12 +34,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       });
       if (response.statusCode == 200) {
         var data = GetPhotosResponse.fromJson(response.data);
-        return Resource(data, null);
+        return Resource(data, false, null);
       }
-      return Resource(null, response.statusMessage);
+      return Resource(null, false, response.statusMessage);
     } on DioError catch (ex) {
       _errorHandler.handleError(ex);
-      return Resource(null, ex.message);
+      return Resource(null, false, ex.message);
     }
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:awesome_app/commons/error_handling/dio_error_handler.dart';
 import 'package:awesome_app/commons/network_state.dart';
 import 'package:awesome_app/data/caching/caching_source.dart';
@@ -8,6 +7,13 @@ import 'package:awesome_app/data/network/api/api_interceptors.dart';
 import 'package:awesome_app/data/network/remote_data_source.dart';
 import 'package:awesome_app/data/network/remote_data_source_impl.dart';
 import 'package:awesome_app/data/repository/repository_impl.dart';
+import 'package:awesome_app/domain/repository/detail_interactor.dart';
+import 'package:awesome_app/domain/repository/home_interactor.dart';
+import 'package:awesome_app/domain/repository/repository.dart';
+import 'package:awesome_app/domain/usecase/detail_use_case.dart';
+import 'package:awesome_app/domain/usecase/home_use_case.dart';
+import 'package:awesome_app/presentation/detail/detail_provider.dart';
+import 'package:awesome_app/presentation/home/home_provider.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,13 +27,16 @@ Future<void> inject() async {
   localModule();
   networkModule();
   repositoryModule();
+  useCaseModule();
+  providerModule();
 }
 
 void networkModule() async {
   getIt.registerSingleton(DioErrorHandler());
   getIt.registerSingleton(Connectivity());
   getIt.registerSingleton(injectDio());
-  getIt.registerSingleton<RemoteDataSource>(RemoteDataSourceImpl(getIt(), getIt()));
+  getIt.registerSingleton<RemoteDataSource>(
+      RemoteDataSourceImpl(getIt(), getIt()));
   getIt.registerFactory<NetworkState>(() => NetworkStateImpl(getIt()));
 }
 
@@ -39,7 +48,19 @@ void localModule() async {
 }
 
 void repositoryModule() async {
-  getIt.registerSingleton(RepositoryImpl(getIt(), getIt(), getIt(), getIt()));
+  getIt.registerSingleton<Repository>(
+      RepositoryImpl(getIt(), getIt(), getIt(), getIt()));
+}
+
+void useCaseModule() async {
+  getIt.registerFactory<HomeUseCase>(() => HomeInteractor(getIt()));
+  getIt.registerFactory<DetailUseCase>(() => DetailInteractor(getIt()));
+}
+
+void providerModule() async {
+  getIt.registerFactory(() => HomeProvider(getIt()));
+  getIt.registerFactoryParam(
+      (param1, param2) => DetailProvider(getIt(), param1 as int));
 }
 
 Dio injectDio() {
